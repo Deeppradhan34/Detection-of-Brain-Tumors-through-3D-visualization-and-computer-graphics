@@ -1,0 +1,268 @@
+#include <stdio.h>
+#include <time.h>
+#include <graphics.h>
+#include <stdlib.h>
+#include<math.h>
+#include<iostream>
+using namespace std;
+
+	void ellipseMidpoint(float, float, float, float);
+	void drawEllipse(float, float, float, float);
+	void calc(int,int);
+	int Quadrant1(int [],int [],int );//FUNCTIONS USED FOR EACH lobes of brain.
+	int Quadrant2(int [],int [],int);
+	int Quadrant3(int [],int[],int);
+	int Quadrant4(int[],int[],int);
+	void max(int []);
+int main()
+{
+	srand(time(NULL));
+	float xc, yc, rx, ry;
+	initwindow(500, 300, "BRAIN TUMORS");
+	 int x4 = 1, y4 = 1;
+	 for (int i = 1;i <= 500; i++) {
+    	line(x4, y4, 500, y4);
+		y4 += 4;
+             }
+
+	int x5 = 1, y5 = 1;
+	for (int i = 1;i <= 500; i++) {
+		line(x5, y5, x5, 300);
+		x5 += 4;
+		}
+
+ 	xc=250;
+ 	yc=150;
+
+	rx=80;
+
+	ry=100;
+	int c1=0;
+	int c2=0;
+	int nx[10];
+	int ny[10];
+	setcolor(YELLOW);
+	setfillstyle(SOLID_FILL, BLUE);
+	line(250,15,250,295);
+	line(155,150,345,150);
+	ellipseMidpoint(xc, yc, rx, ry);
+	int count=0;
+	
+	setfillstyle(SOLID_FILL,RED);
+	while(count<10) //number of circles
+	{
+		int a = (rand() % 160) + 170;//random values
+		int b = (rand() % 200) + 50;
+		
+		int xw=0;
+		
+	 xw=(pow((250-a),2)/(80*80))+(pow((150-b),2)/(100*100));//ellipse formula to check the point inside ellipse
+
+	if(xw<1||xw==0)//condition to be spots inside ellipse
+	{
+	nx[c1++]=a;
+	ny[c2++]=b;
+	
+	count++;
+	}
+	
+	}
+		for(int j=0;j<count;j++)
+		{
+
+		circle(nx[j],ny[j],5);
+		floodfill (nx[j],ny[j], RED);
+	}//putting circles
+	
+	int q1=Quadrant1(nx,ny,count);
+	cout<<"NUMBER OF CANCER SPOTS IN FRONTAL LOBE:"<<q1<<"\n";
+	cout<<"\n";
+	int q2=Quadrant2(nx,ny,count);
+	cout<<"NUMBER OF CANCER SPOTS IN PARIENTAL LOBE:"<<q2<<"\n";
+	cout<<"\n";
+	cout<<"\n";
+	int q3=Quadrant3(nx,ny,count);
+	cout<<"NUMBER OF CANCER SPOTS IN OCCIPITAL LOBE:"<<q3<<"\n";
+	cout<<"\n";
+	cout<<"\n";
+	int q4=Quadrant4(nx,ny,count);
+	cout<<"NUMBER OF CANCER SPOTS IN TEMPORAL LOBE:"<<q4<<"\n";
+	cout<<"\n";
+	cout<<"\n";
+	int aspots[4]={q1,q2,q3,q4};
+	max(aspots);
+	getch();
+	
+
+}
+void ellipseMidpoint(float xc, float yc, float rx, float ry) {//ellipse Midepoint
+	float rxSq = rx * rx;
+	float rySq = ry * ry;
+	float x = 0, y = ry, p;
+	float px = 0, py = 2 * rxSq * y;
+	drawEllipse(xc, yc, x, y);
+ //Region 1
+	p = rySq - (rxSq * ry) + (0.25 * rxSq);
+	while (px < py) {
+		x++;
+		px = px + 2 * rySq;
+		if (p < 0)
+			p = p + rySq + px;
+		else {
+			y--;
+			py = py - 2 * rxSq;
+			p = p + rySq + px - py;
+	        }
+	drawEllipse(xc, yc, x, y);
+	//delay(30);
+	     }
+ //Region 2
+	p = rySq*(x+0.5)*(x+0.5) + rxSq*(y-1)*(y-1) - rxSq*rySq;
+	while (y > 0)
+	{
+		y--;
+		py = py - 2 * rxSq;
+		if (p > 0)
+			p = p + rxSq - py;
+		else {
+			x++;
+			px = px + 2 * rySq;
+			p = p + rxSq - py + px;
+		}
+	drawEllipse(xc, yc, x, y);
+//	delay(30);
+	}
+}
+void drawEllipse(float xc, float yc, float x, float y)
+{
+	putpixel(xc+x, yc+y, YELLOW);
+	calc(xc+x,yc+y);
+	putpixel(xc-x, yc+y, YELLOW);
+	calc(xc-x,yc+y);
+	putpixel(xc+x, yc-y,YELLOW);
+	calc(xc+x,yc-y);
+	putpixel(xc-x, yc-y, YELLOW);
+	calc(xc-x,yc-y);
+}
+int Quadrant1(int x[],int y[],int count)
+{
+	int count1=0;//counters for circles in quadrant1.
+	for(int i=50;i<=150;i++)//for y lines
+	{
+		for(int j=250;j<=330;j++)//for x lines
+		{
+			for(int k=0;k<count;k++)//for circles i.e circles are 6
+			{
+				if((x[k]==j)&&(y[k]==i))
+				count1++;
+			}
+		}
+}
+
+	return count1;
+    }
+	int Quadrant2(int x[],int y[],int count)
+   {
+	int count1=0;//counters for circles in quadrant 2
+	for(int i=50;i<=150;i++)//for y lines
+	{
+		for(int j=170;j<=250;j++)//for x lines
+		{
+			for(int k=0;k<count;k++)//for circles i.e circles are 6
+			{
+				if((x[k]==j)&&(y[k]==i))
+				count1++;
+			}
+		}
+	}
+
+	return count1;
+    }
+	int Quadrant3(int x[],int y[],int count)
+   {
+	int count1=0;//counters for circles in quadrant1.
+	for(int i=150;i<=250;i++)//for y lines
+	{
+		for(int j=170;j<=250;j++)//for x lines
+		{
+			for(int k=0;k<count;k++)//for circles i.e circles are 6
+			{
+				if((x[k]==j)&&(y[k]==i))
+				count1++;
+			}
+		}
+	}
+	return count1;
+   }
+	int Quadrant4(int x[],int y[],int count)
+    {
+	int count1=0;//counters for circles in quadrant1.
+	for(int i=150;i<=250;i++)//for y lines
+	{
+		for(int j=250;j<=330;j++)//for x lines
+		{
+			for(int k=0;k<count;k++)//for circles i.e circles are 6
+			{
+				if((x[k]==j)&&(y[k]==i))
+				count1++;
+			}
+		}
+		}
+
+	return count1;
+	}
+	void max(int max1[])//Sorting (Bubble sort)
+	{
+     int temp;
+     int temp1;
+    
+	//int size=sizeof(max1)/sizeof(int);
+	//cout<<size;
+	 int t[4]={1,2,3,4};
+	for(int i=0;i<4;i++)
+	{
+	for(int j=0;j<4-i-1;j++)
+	{
+
+	if(max1[j]>max1[j+1])
+	{
+		temp1=t[j];
+		t[j]=t[j+1];
+		t[j+1]=temp1;
+		temp = max1[j];
+      		 max1[j] =max1[j+1];
+       		max1[j+1] = temp;
+	}
+
+	}
+	}
+	cout<<"THE MAXIMUM CANCER SPOTS ARE :"<<max1[3]<<"IN LOBE:"<<t[3];
+	}
+
+
+
+	void calc(int x1,int y1)//logic for drawing pixels
+	{
+
+	int rem=x1%4;
+	int rem1=y1%4;
+
+	if(rem!=0)
+    {
+	x1-=rem;
+	}
+	if(rem1!=0)
+	{
+	y1-=rem1;
+	}
+
+	int a[]={x1,y1,x1+4,y1,x1+4,y1+4,x1,y1+4,x1,y1};
+
+	setcolor(RED);
+
+	fillpoly(5,a);//filling the polygon
+
+	}
+
+
+
